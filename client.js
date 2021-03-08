@@ -7,18 +7,18 @@ const todoPackage = grpcObject.todoPackage;
 const text = process.argv[2]
 const client = new todoPackage.Todo("localhost:4050", grpc.credentials.createInsecure());
 
-
-client.createTodo({
+if(text!=undefined){
+    client.createTodo({
     "id": -1,
     "text": text
 },(err,response)=>{
     console.log("Recieved from server "+ JSON.stringify(response));
-})
+})}
+
 client.readTodo({},(err,response)=>{
     console.log("recieved from server "+ JSON.stringify(response));   
     response.items.forEach(i => console.log(i.text));
       
-    
 })
 const call = client.readTodosSTream();
 
