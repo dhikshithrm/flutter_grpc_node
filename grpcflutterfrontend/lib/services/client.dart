@@ -11,7 +11,7 @@ class TDClient {
   TDClient(){
     client = TodoClient(channel);
   }
-  createTodo(body)async{
+  createTodo(String body)async{
     final response = await client.createTodo(
       TodoItem()
       ..id = -1
