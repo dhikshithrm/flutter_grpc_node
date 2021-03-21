@@ -3,9 +3,20 @@ const protoLoader = require("@grpc/proto-loader");
 const packageDef = protoLoader.loadSync("todo.proto", {});
 const grpcObject = grpc.loadPackageDefinition(packageDef);
 const todoPackage = grpcObject.todoPackage;
+const fs = require('fs');
 
+
+const credentials = grpc.credentials.createSsl(
+    fs.readFileSync('./grpcflutterfrontend/lib/certs/ca.crt'),
+    fs.readFileSync('./grpcflutterfrontend/lib/certs/client.key'),
+    fs.readFileSync('./grpcflutterfrontend/lib/certs/client.crt')
+);
+var options = {
+    'grpc.ssl_target_name_override' : 'piedpiers.technology',
+    'grpc.default_authority': 'piedpiers.technology'
+  };
 const text = process.argv[2]
-const client = new todoPackage.Todo("localhost:4050", grpc.credentials.createInsecure());
+const client = new todoPackage.Todo("65.0.12.145:4050", credentials,options);
 
 if(text!=undefined){
     client.createTodo({
@@ -17,7 +28,7 @@ if(text!=undefined){
 
 client.readTodo({},(err,response)=>{
     console.log("recieved from server "+ JSON.stringify(response));   
-    response.items.forEach(i => console.log(i.text));
+    
       
 })
 const call = client.readTodosSTream();
